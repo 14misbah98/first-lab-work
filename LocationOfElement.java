@@ -2,19 +2,19 @@ import java.util.Scanner;
 public class LocationOfElement {
 
 	public static void main(String[] args) {
-		int n,x,flag=0,i=0;
-		Scanner s=new Scanner(System.in);
+		int  n,x,flag=0,i=0;
+		Scanner m=new Scanner(System.in);
 		System.out.println("Enter no. of elements you want in array:");
-		n=s.nextInt();
+		n=m.nextInt();
 		int a[]=new int[n];
 		System.out.println("enter all the elements:");
 		for(i=0;i<n;i++)
 		{
-			a[i]=s.nextInt();
+			a[i]=m.nextInt();
 			
 		}
 		System.out.println("enter the element you want to find:");
-		x=s.nextInt();
+		x=m.nextInt();
 		for(i=0;i<n;i++) {
 			if(a[i]==x) {
 				flag=1;
