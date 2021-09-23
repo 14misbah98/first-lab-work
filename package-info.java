@@ -1,1 +1,1 @@
-package secondwork;
+package mod1_2.day6;
