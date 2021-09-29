@@ -1,29 +1,46 @@
-package mod1_2.day4;
+package com.day13;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 public class ThreadDemo6 {
-		public ThreadDemo6() {
-			//Thread t=new Thread(new MyJob3());
-			//t.start();
-			ExecutorService es=Executors.newFixedThreadPool(1);
-			es.execute(new MyJob3());
-			es.shutdown();
-		}
-		public static void main(String[] args) {
-			new ThreadDemo6();
-			for(int i=0;i<5;i++) {
-				System.out.println(i);
-				try {Thread.sleep(1000);}catch(Exception e) {}
-			}
-		}
+	public static void main(String[] args) {
+		Hall hall1=new Hall();
+		Hall hall2=new Hall();
+		
+		ExecutorService es=Executors.newFixedThreadPool(2);
+		es.execute(new TrainingJob(hall1,"ramu"));
+		es.execute(new TrainingJob(hall2,"somu"));
+		
+		es.shutdown();
 	}
-	class MyJob3 implements Runnable{
-		@Override
-		public void run() {
-			System.out.println("child thread called...");
-		}
-	
-	
-
 }
+class TrainingJob implements Runnable{
+	Hall hall;String name;
+	public TrainingJob(Hall hall,String name) {
+		this.hall=hall;
+		this.name=name;
+	}
+	@Override
+	public void run() {
+		Thread.currentThread().setName(name);
+		synchronized(Hall.class) {//class lock, one lock for all the objects of this class
+			hall.toilet.usingToilet();
+		}
+		
+	}
+}
+class Hall{
+	static Toilet toilet=new Toilet();
+}
+class Toilet{
+	public Toilet() {
+		System.out.println("toilet object created...");
+	}
+	public void usingToilet() {
+		Thread t=Thread.currentThread();
+		System.out.println(t.getName()+" using toilet......");
+		try {Thread.sleep(5000);}catch(Exception e) {}
+		System.out.println(t.getName()+" came out of toilet....");
+	}
+}
+
+

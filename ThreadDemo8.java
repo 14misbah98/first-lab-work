@@ -1,63 +1,66 @@
-package mod1_2.day7;
+package com.day14;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+
 public class ThreadDemo8 {
+
 	public static void main(String[] args) {
-		CounsellingHall hall=new CounsellingHall();
-		ExecutorService es=Executors.newFixedThreadPool(3);
-		es.execute(new AdmissionJob("fayaz",hall));
-		es.execute(new AdmissionJob("ramu",hall));
-		es.execute(new AdmissionJob("mary",hall));
+		Gun bofors=new Gun();
+		ExecutorService es=Executors.newFixedThreadPool(2);
+		es.execute(new War(bofors,"ram"));//this will execute the thread with a job		
+		es.execute(new War(bofors,"rahim"));
 		es.shutdown();
 	}
+
 }
-class AdmissionJob implements Runnable{
-	String name;
-	CounsellingHall hall;
-	
-	public AdmissionJob(String name,CounsellingHall hall) {
-		this.name=name;this.hall=hall;
+class War implements Runnable{
+	Gun gun;String name;
+	public War(Gun gun,String name) {
+		this.gun=gun;
+		this.name=name;
 	}
 	@Override
 	public void run() {
 		Thread.currentThread().setName(name);
-		//synchronized(hall) {
-		if(name.equals("mary")) {
-			hall.water();
-			hall.checkCredentials();
-			hall.doAdmission();
-			hall.makePayment();
+		if (name.equals("ram")) {
+			for(int i=0;i<5;i++) {
+				gun.fill();
+			}
 		}
 		else {
-			hall.checkCredentials();
-			hall.doAdmission();
-			hall.makePayment();
+			for(int i=0;i<5;i++) {
+				gun.shoot();
+			}
 		}
-		//}
 	}
 }
-class CounsellingHall{
-	synchronized public void checkCredentials() {
-		Thread t=Thread.currentThread();
-		String name=t.getName();
-		System.out.println("checking credentials...:"+name);
+class Gun{
+	boolean flag;
+	synchronized public void fill() {
+		if(flag) {
+			try {
+				wait();}
+			catch(Exception e) {}
+			
+		}
+		
+			System.out.println("fill the gun....");
+			flag=true;
+		    notify();
 	}
-	synchronized public void doAdmission() {
-		Thread t=Thread.currentThread();
-		String name=t.getName();
-		System.out.println("taking admission in college.....:"+name);
+	synchronized public void shoot() {
+		if(!flag) {
+			try {
+				wait();}
+			catch(Exception e) {}
+			
+		}
+		
+		
+			System.out.println("shoot the gun...");
+			flag=false;
+			notify();
+		}
 	}
-	synchronized public void makePayment() {
-		Thread t=Thread.currentThread();
-		String name=t.getName();
-		System.out.println("Making payment...:"+name);
-		try {Thread.sleep(5000);}catch(Exception e) {}
-		System.out.println("Admission process over..."+name);
-	}
-	
-	public void water() {
-		Thread t=Thread.currentThread();
-		String name=t.getName();
-		System.out.println("Drinking water...:"+name);
-	}
-}
